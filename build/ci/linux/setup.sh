@@ -3,10 +3,10 @@
 # For maximum AppImage compatibility, build on the oldest Linux distribution
 # that still receives security updates from its manufacturer.
 
-echo "Setup Linux docker image for build AppImage"
+echo "Setup Linux build environment"
 trap 'echo Setup failed; exit 1' ERR
 
-df -k .
+df -h .
 
 # Go one-up from MuseScore root dir regardless of where script was run from:
 cd "$(dirname "$(readlink -f "${0}")")/../../../.."
@@ -115,7 +115,6 @@ update-alternatives \
   --install /usr/bin/gcc gcc "/usr/bin/gcc-${gcc_version}" 40 \
   --slave /usr/bin/g++ g++ "/usr/bin/g++-${gcc_version}"
 
-#apt-get install -y --no-install-recommends g++
 echo export CC="/usr/bin/gcc-${gcc_version}" >> ${ENV_FILE}
 echo export CXX="/usr/bin/g++-${gcc_version}" >> ${ENV_FILE}
 
@@ -146,13 +145,13 @@ echo export VST3_SDK_PATH="$HOME/vst/VST3_SDK" >> $ENV_FILE
 # POST INSTALL
 ##########################################################################
 
-chmod +x "$ENV_FILE"
+chmod +x "${ENV_FILE}"
 
 # # tidy up (reduce size of Docker image)
 # apt-get clean autoclean
 # apt-get autoremove --purge -y
 # rm -rf /tmp/* /var/{cache,log,backups}/* /var/lib/apt/*
 
-df -k .
+df -h .
 echo "Setup script done"
 
